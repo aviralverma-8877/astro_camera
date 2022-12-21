@@ -1,0 +1,12 @@
+#!/usr/bin/env python3
+
+from Functions import Functions
+import os
+
+main_dir = os.path.dirname(__file__)
+func = Functions()
+func.init_system(main_dir)
+func.setup_buttons()
+
+while True:
+    pass
