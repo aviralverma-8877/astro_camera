@@ -7,7 +7,7 @@ import _thread
 class Functions:
     def init_system(self, main_dir):
         self.main_dir = main_dir
-        self.menu_obj = Menu()
+        self.menu_obj = Menu(self.main_dir)
         self.menu = self.menu_obj.get_menu_items()
         self.total_menu_items = len(self.menu)
         self.current_menu_index = 0

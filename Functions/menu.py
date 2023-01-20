@@ -5,9 +5,10 @@ import socket
 import _thread
 
 class Menu:
-    def __init__(self):
+    def __init__(self, main_dir):
         self.current_selected = 0
-        self.camera = Camera()
+        self.main_dir = main_dir
+        self.camera = Camera(self.main_dir)
         self.menu = [
             {
                 "head" : "ISO",
@@ -22,16 +23,25 @@ class Menu:
                 "options" : ["0.1","0.2","0.3","0.5","1","2","3","4","5","6"]
             },
             {
-                "head" : "Contrast",
+                "head" : "Resolution",
                 "unit" : "",
-                "current-option" : 4,
-                "options" : ["10","20","30","40","50","60","70","80","90","100"]
-            },
-            {
-                "head" : "Brightness",
-                "unit" : "",
-                "current-option" : 4,
-                "options" : ["10","20","30","40","50","60","70","80","90","100"]
+                "current-option" : 14,
+                "options" : [
+                    "176 x 120",
+                    "352 x 240",
+                    "704 x 240",
+                    "704 x 480",
+                    "720 x 480",
+                    "1280 x 720",
+                    "1280 x 960",
+                    "1280 x 1024",
+                    "1600 x 1200",
+                    "1920 x 1080",
+                    "2048 x 1536",
+                    "2688 x 1520",
+                    "2592 x 1944",
+                    "3072 x 2048",
+                    "3280 x 2464"]
             },
             {
                 "head" : "Image Time",
@@ -43,7 +53,7 @@ class Menu:
                 "head" : "Output",
                 "unit" : "",
                 "current-option" : 0,
-                "options" : ["RAW","JPEG","RAW+JPEG"]
+                "options" : ["RAW","JPEG"]
             },
             {
                 "head" : "Image Count",
@@ -112,16 +122,16 @@ class Menu:
         _thread.start_new_thread(self.capture, (param,))
 
     def capture(self, param=[]):
-        image_count = int(self.menu[6]["options"][self.menu[6]["current-option"]])
+        image_count = int(self.menu[5]["options"][self.menu[5]["current-option"]])
         self.camera.configure(self.menu)
         for i in range(1, image_count+1):
             func = param[0]
-            self.menu[func.current_menu_index]["value"] = "Capturing " + str(i)
+            self.menu[6]["value"] = "Capturing " + str(i)
             func.show_menu_screen()
             self.camera.capture()
-        self.menu[func.current_menu_index]["value"] = "Start Capture"
+        self.menu[6]["value"] = "Start Capture"
         func.show_menu_screen()
-        self.menu[7]["action"] = self.blank_method
+        self.menu[6]["action"] = self.capture
 
     def change_current_option(self, menu_index, option_index):
         self.menu[menu_index]["current-option"] = option_index
