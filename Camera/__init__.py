@@ -27,7 +27,7 @@ class StreamingOutput(object):
 class Camera:
     def __init__(self, main_dir) -> None:
         self.main_dir = main_dir
-        self.camera = PiCamera()
+        
 
     def configure(self, menu):
         resolution = (
@@ -40,17 +40,20 @@ class Camera:
         self.image_type = menu[4]["options"][menu[4]["current-option"]]
         framerate = Fraction(1,6)
         sensor_mode = 3
+        self.camera = PiCamera()
         self.camera.framerate = framerate
         self.camera.sensor_mode = sensor_mode
         self.camera.resolution = resolution
         self.camera.shutter_speed = shutter_speed
         self.camera.iso = iso
+        self.camera.exposure_mode = 'off'
         self.wait_time = wait_time
 
-    def show_preview(self, height, width, disp, func, callback, stop):
+    def show_preview(self, height, width, disp, func, callback, zoom, stop):
         output = StreamingOutput()
         #Uncomment the next line to change your Pi's Camera rotation (in degrees)
         framerate = 24
+        self.camera = PiCamera()
         self.camera.framerate = framerate
         self.camera.rotation = 90
         self.camera.resolution = str(height)+"x"+str(width)
@@ -63,8 +66,13 @@ class Camera:
                 disp.LCD_ShowImage(image,0,0)
                 if stop():
                     exit(0)
+                if zoom():
+                    self.camera.zoom = (0.4,0.4,0.2,0.2)
+                else:
+                    self.camera.zoom = (0,0,width,height)
         finally:
             self.camera.stop_recording()
+            self.camera.close()
             callback([func])
 
     def capture(self):
@@ -75,6 +83,5 @@ class Camera:
             self.camera.capture(filename, format='jpeg', bayer=True)
         else:
             self.camera.capture(filename, format='jpeg')
-    
     def blank_method(self, param=[]):
         pass
