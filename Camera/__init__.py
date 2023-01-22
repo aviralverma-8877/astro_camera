@@ -27,7 +27,7 @@ class StreamingOutput(object):
 class Camera:
     def __init__(self, main_dir) -> None:
         self.main_dir = main_dir
-        framerate = 60
+        framerate = 10
         self.camera = PiCamera(
             framerate = framerate
         )
