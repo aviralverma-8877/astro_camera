@@ -36,42 +36,45 @@ class Functions:
         self.buttons.gpio_cleanup()
 
     def action(self, key):
-        if (key == "left"):
-            self.current_menu_index -= 1
+        if not self.menu_obj.previewing:
+            if (key == "left"):
+                self.current_menu_index -= 1
+                
+            if (key == "right"):
+                self.current_menu_index += 1
+                
+            if self.current_menu_index == -1:
+                self.current_menu_index = self.total_menu_items - 1
+            if self.current_menu_index == self.total_menu_items:
+                self.current_menu_index = 0
             
-        if (key == "right"):
-            self.current_menu_index += 1
-            
-        if self.current_menu_index == -1:
-            self.current_menu_index = self.total_menu_items - 1
-        if self.current_menu_index == self.total_menu_items:
-            self.current_menu_index = 0
-        
-        option_length = len(self.menu[self.current_menu_index]["options"])
-        current_option = self.menu[self.current_menu_index]["current-option"]
+            option_length = len(self.menu[self.current_menu_index]["options"])
+            current_option = self.menu[self.current_menu_index]["current-option"]
 
-        if (key == "up"):            
-            if current_option != None:
-                current_option -= 1
-        
-        if (key == "down"):
-            if current_option != None:
-                current_option += 1
-        if (key == "key2"):
-            if current_option == None:
-                action = self.menu[self.current_menu_index]["action"]
-                param = self.menu[self.current_menu_index]["param"]
-                param.append(self)
-                action(param = param)
+            if (key == "up"):            
+                if current_option != None:
+                    current_option -= 1
+            
+            if (key == "down"):
+                if current_option != None:
+                    current_option += 1
+            if (key == "key2"):
+                if current_option == None:
+                    action = self.menu[self.current_menu_index]["action"]
+                    param = self.menu[self.current_menu_index]["param"]
+                    param.append(self)
+                    action(param = param)
+
+            if current_option == -1:
+                current_option = option_length - 1
+            elif current_option == option_length:
+                current_option = 0
+
+            self.menu_obj.change_current_option(self.current_menu_index, current_option)
+            self.show_menu_screen()
+
         if (key == "key1"):
             if self.menu_obj.stop_threads == False:
                 self.menu_obj.stop_threads = True
                 self.show_menu_screen()
 
-        if current_option == -1:
-            current_option = option_length - 1
-        elif current_option == option_length:
-            current_option = 0
-
-        self.menu_obj.change_current_option(self.current_menu_index, current_option)
-        self.show_menu_screen()
