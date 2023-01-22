@@ -1,17 +1,35 @@
 import time
-import gc
+import io
 from picamera import PiCamera
 from datetime import datetime
 from fractions import Fraction
+from threading import Condition
+from PIL import Image
+
+
+class StreamingOutput(object):
+    def __init__(self):
+        self.frame = None
+        self.buffer = io.BytesIO()
+        self.condition = Condition()
+
+    def write(self, buf):
+        if buf.startswith(b'\xff\xd8'):
+            # New frame, copy the existing buffer's content and notify all
+            # clients it's available
+            self.buffer.truncate()
+            with self.condition:
+                self.frame = self.buffer.getvalue()
+                self.condition.notify_all()
+            self.buffer.seek(0)
+        return self.buffer.write(buf)
 
 class Camera:
     def __init__(self, main_dir) -> None:
         self.main_dir = main_dir
-        framerate = Fraction(1, 6)
-        sensor_mode = 3
+        framerate = 60
         self.camera = PiCamera(
-            framerate = framerate,
-            sensor_mode = sensor_mode
+            framerate = framerate
         )
 
     def configure(self, menu):
@@ -34,6 +52,24 @@ class Camera:
         self.camera.shutter_speed = shutter_speed
         self.camera.iso = iso
         self.wait_time = wait_time
+
+    def show_preview(self, height, width, disp, stop):
+        output = StreamingOutput()
+        #Uncomment the next line to change your Pi's Camera rotation (in degrees)
+        self.camera.rotation = 90
+        self.camera.resolution = str(height)+"x"+str(width)
+        self.camera.start_recording(output, format='mjpeg')
+        try:
+            while True:
+                with output.condition:
+                    output.condition.wait()
+                image = Image.open(output.buffer)
+                disp.LCD_ShowImage(image,0,0)
+                if stop():
+                    self.camera.stop_recording()
+                    exit(0)
+        finally:
+            self.camera.stop_recording()
 
     def capture(self):
         time.sleep(self.wait_time)

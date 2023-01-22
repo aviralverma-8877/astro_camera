@@ -2,10 +2,13 @@ from Camera import Camera
 import os
 import time
 import socket
-import _thread
+import threading
 
 class Menu:
     def __init__(self, main_dir):
+        self.stop_threads = False
+        self.capture_thread = None
+        self.preview_thread = None
         self.current_selected = 0
         self.main_dir = main_dir
         self.camera = Camera(self.main_dir)
@@ -127,8 +130,25 @@ class Menu:
                 "options" : [],
                 "action" : self.erase_storage,
                 "param" : []
-            }
-        ]
+            },
+            {
+                "head" : "Preview",
+                "value" : "Show Preview",
+                "unit" : "",
+                "current-option" : None,
+                "options" : [],
+                "action" : self.show_preview,
+                "param" : []
+            },
+        ]        
+    def show_preview(self, param=[]):
+        func = param[0]
+        height = func.display.height
+        width = func.display.width
+        disp = func.display.disp
+        self.stop_threads = False
+        self.preview_thread = threading.Thread(target=self.camera.show_preview, args=(height, width, disp, lambda: self.stop_threads))
+        self.preview_thread.start()
 
     def erase_storage(self, param=[]):
         func = param[0]
@@ -169,9 +189,11 @@ class Menu:
         func.show_menu_screen()
         os.system("sudo modprobe g_mass_storage -r")
         time.sleep(1)
-        _thread.start_new_thread(self.capture, (param,))
+        self.stop_threads = False
+        self.capture_thread = threading.Thread(target=self.capture, args=(lambda: self.stop_threads,param,))
+        self.capture_thread.start()
 
-    def capture(self, param=[]):
+    def capture(self, stop, param=[]):
         image_count = int(self.menu[5]["options"][self.menu[5]["current-option"]])
         self.camera.configure(self.menu)
         for i in range(1, image_count+1):
@@ -179,6 +201,11 @@ class Menu:
             self.menu[6]["value"] = "Capturing " + str(i)
             func.show_menu_screen()
             self.camera.capture()
+            if stop():
+                self.menu[6]["value"] = "Start Capture"
+                func.show_menu_screen()
+                self.menu[6]["action"] = self.capture
+                exit(0)
         self.menu[6]["value"] = "Start Capture"
         func.show_menu_screen()
         self.menu[6]["action"] = self.capture

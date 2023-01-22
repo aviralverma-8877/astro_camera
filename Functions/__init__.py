@@ -2,7 +2,7 @@ from Display import Display
 from Buttons import Buttons
 from Functions.menu import Menu
 import time
-import _thread
+import threading
 
 class Functions:
     def init_system(self, main_dir):
@@ -29,7 +29,8 @@ class Functions:
         self.display.show_menu(head, body)
 
     def setup_buttons(self):
-        _thread.start_new_thread(self.buttons.listen,())
+        setup_buttons_thread = threading.Thread(target=self.buttons.listen, args=())
+        setup_buttons_thread.start()
 
     def gpio_cleanup(self):
         self.buttons.gpio_cleanup()
@@ -62,6 +63,11 @@ class Functions:
                 param = self.menu[self.current_menu_index]["param"]
                 param.append(self)
                 action(param = param)
+        if (key == "key1"):
+            if self.menu_obj.stop_threads == False:
+                self.menu_obj.stop_threads = True
+                self.show_menu_screen()
+
         if current_option == -1:
             current_option = option_length - 1
         elif current_option == option_length:
