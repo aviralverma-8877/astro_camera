@@ -7,6 +7,8 @@ import threading
 class Menu:
     def __init__(self, main_dir):
         self.previewing = False
+        self.zoom = False
+        self.cross = True
         self.stop_threads = False
         self.capture_thread = None
         self.preview_thread = None
@@ -153,18 +155,22 @@ class Menu:
         disp = func.display.disp
         self.stop_threads = False
         self.previewing = True
+        self.zoom = False
         self.preview_thread = threading.Thread(target=self.camera.show_preview, args=(
             height,
             width,
             disp,
             func,
             self.reset_preview,
+            lambda: self.cross,
+            lambda: self.zoom,
             lambda: self.stop_threads))
         self.preview_thread.start()
 
     def reset_preview(self, param=[]):
         func = param[0]
         self.previewing = False
+        self.zoom = False
         self.menu[14]["value"] = "Show Preview"
         self.menu[14]["action"] = self.show_preview
         func.show_menu_screen()
@@ -221,16 +227,19 @@ class Menu:
     def capture(self, stop, param=[]):
         image_count = int(self.menu[5]["options"][self.menu[5]["current-option"]])
         self.camera.configure(self.menu)
-        for i in range(1, image_count+1):
-            func = param[0]
-            self.menu[6]["value"] = "Capturing " + str(i)
-            func.show_menu_screen()
-            self.camera.capture()
-            if stop():
-                self.menu[6]["value"] = "Start Capture"
+        try:
+            for i in range(1, image_count+1):
+                func = param[0]
+                self.menu[6]["value"] = "Capturing " + str(i)
                 func.show_menu_screen()
-                self.menu[6]["action"] = self.capture_image
-                exit(0)
+                self.camera.capture()
+                if stop():
+                    self.menu[6]["value"] = "Start Capture"
+                    func.show_menu_screen()
+                    self.menu[6]["action"] = self.capture_image
+                    exit(0)
+        finally:
+            self.camera.camera.close()
         self.menu[6]["value"] = "Start Capture"
         func.show_menu_screen()
         self.menu[6]["action"] = self.capture_image
