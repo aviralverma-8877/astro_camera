@@ -229,11 +229,11 @@ class Menu:
             if stop():
                 self.menu[6]["value"] = "Start Capture"
                 func.show_menu_screen()
-                self.menu[6]["action"] = self.capture
+                self.menu[6]["action"] = self.capture_image
                 exit(0)
         self.menu[6]["value"] = "Start Capture"
         func.show_menu_screen()
-        self.menu[6]["action"] = self.capture
+        self.menu[6]["action"] = self.capture_image
 
     def change_current_option(self, menu_index, option_index):
         self.menu[menu_index]["current-option"] = option_index
