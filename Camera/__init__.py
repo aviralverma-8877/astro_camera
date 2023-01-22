@@ -27,10 +27,7 @@ class StreamingOutput(object):
 class Camera:
     def __init__(self, main_dir) -> None:
         self.main_dir = main_dir
-        framerate = 10
-        self.camera = PiCamera(
-            framerate = framerate
-        )
+        self.camera = PiCamera()
 
     def configure(self, menu):
         resolution = (
@@ -41,21 +38,20 @@ class Camera:
         iso = int(menu[0]["options"][menu[0]["current-option"]])
         wait_time = float(menu[3]["options"][menu[3]["current-option"]])
         self.image_type = menu[4]["options"][menu[4]["current-option"]]
-
-
-        print("resulution",resolution)
-        print("shutter_speed",shutter_speed)
-        print("wait_time",wait_time)
-        print("Image Type", self.image_type)
-
+        framerate = Fraction(1,6)
+        sensor_mode = 3
+        self.camera.framerate = framerate
+        self.camera.sensor_mode = sensor_mode
         self.camera.resolution = resolution
         self.camera.shutter_speed = shutter_speed
         self.camera.iso = iso
         self.wait_time = wait_time
 
-    def show_preview(self, height, width, disp, stop):
+    def show_preview(self, height, width, disp, func, callback, stop):
         output = StreamingOutput()
         #Uncomment the next line to change your Pi's Camera rotation (in degrees)
+        framerate = 24
+        self.camera.framerate = framerate
         self.camera.rotation = 90
         self.camera.resolution = str(height)+"x"+str(width)
         self.camera.start_recording(output, format='mjpeg')
@@ -66,10 +62,10 @@ class Camera:
                 image = Image.open(output.buffer)
                 disp.LCD_ShowImage(image,0,0)
                 if stop():
-                    self.camera.stop_recording()
                     exit(0)
         finally:
             self.camera.stop_recording()
+            callback([func])
 
     def capture(self):
         time.sleep(self.wait_time)
@@ -79,3 +75,6 @@ class Camera:
             self.camera.capture(filename, format='jpeg', bayer=True)
         else:
             self.camera.capture(filename, format='jpeg')
+    
+    def blank_method(self, param=[]):
+        pass

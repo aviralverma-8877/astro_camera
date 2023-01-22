@@ -6,6 +6,7 @@ import threading
 
 class Menu:
     def __init__(self, main_dir):
+        self.previewing = False
         self.stop_threads = False
         self.capture_thread = None
         self.preview_thread = None
@@ -143,12 +144,36 @@ class Menu:
         ]        
     def show_preview(self, param=[]):
         func = param[0]
+        self.menu[14]["value"] = "Previewing..."
+        self.menu[14]["action"] = self.blank_method
+        func.show_menu_screen()
+
         height = func.display.height
         width = func.display.width
         disp = func.display.disp
         self.stop_threads = False
-        self.preview_thread = threading.Thread(target=self.camera.show_preview, args=(height, width, disp, lambda: self.stop_threads))
+        self.previewing = True
+        self.preview_thread = threading.Thread(target=self.camera.show_preview, args=(
+            height,
+            width,
+            disp,
+            func,
+            self.reset_preview,
+            lambda: self.stop_threads))
         self.preview_thread.start()
+
+    def reset_preview(self, param=[]):
+        func = param[0]
+        self.previewing = False
+        self.menu[14]["value"] = "Show Preview"
+        self.menu[14]["action"] = self.show_preview
+        func.show_menu_screen()
+
+    def stop_preview(self, param=[]):
+        func = param[0]
+        if self.stop_threads == False:
+                self.stop_threads = True
+                func.show_menu_screen()
 
     def erase_storage(self, param=[]):
         func = param[0]
@@ -224,7 +249,6 @@ class Menu:
             s.close()
         except:
             IPAddr = "Not Available"
-        print(IPAddr)
         func = param[0]
         self.menu[func.current_menu_index]["value"] = IPAddr
         func.show_menu_screen()
