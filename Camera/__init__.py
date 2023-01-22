@@ -30,7 +30,7 @@ class Camera:
         print("wait_time",wait_time)
         print("Image Type", self.image_type)
 
-        self.resolution = resolution
+        self.camera.resolution = resolution
         self.camera.shutter_speed = shutter_speed
         self.camera.iso = iso
         self.wait_time = wait_time

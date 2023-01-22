@@ -25,7 +25,7 @@ class Menu:
             {
                 "head" : "Resolution",
                 "unit" : "",
-                "current-option" : 14,
+                "current-option" : 9,
                 "options" : [
                     "176 x 120",
                     "352 x 240",
@@ -36,12 +36,7 @@ class Menu:
                     "1280 x 960",
                     "1280 x 1024",
                     "1600 x 1200",
-                    "1920 x 1080",
-                    "2048 x 1536",
-                    "2688 x 1520",
-                    "2592 x 1944",
-                    "3072 x 2048",
-                    "3280 x 2464"]
+                    "1920 x 1080"]
             },
             {
                 "head" : "Image Time",
@@ -115,10 +110,65 @@ class Menu:
                 "action" : self.quit,
                 "param" : []
             },
+            {
+                "head" : "Mass Storage",
+                "value" : "Start",
+                "unit" : "",
+                "current-option" : None,
+                "options" : [],
+                "action" : self.start_mass_storage,
+                "param" : []
+            },
+            {
+                "head" : "Erase",
+                "value" : "Erase Images",
+                "unit" : "",
+                "current-option" : None,
+                "options" : [],
+                "action" : self.erase_storage,
+                "param" : []
+            }
         ]
 
+    def erase_storage(self, param=[]):
+        func = param[0]
+        self.menu[13]["value"] = "Erasing..."
+        self.menu[13]["action"] = self.blank_method
+
+        self.menu[12]["value"] = "Start"
+        self.menu[12]["action"] = self.start_mass_storage
+        func.show_menu_screen()
+        os.system("sudo modprobe g_mass_storage -r")
+        time.sleep(1)
+        os.system("sudo rm -r /mnt/usb_share/*")
+        self.menu[13]["value"] = "Erase Images"
+        self.menu[13]["action"] = self.erase_storage
+        func.show_menu_screen()
+
+    def start_mass_storage(self, param=[]):
+        func = param[0]
+        self.menu[12]["value"] = "Stop"
+        self.menu[12]["action"] = self.stop_mass_storage
+        func.show_menu_screen()
+        os.system("sudo modprobe g_mass_storage file=/piusb.bin removable=y ro=1 stall=0")
+    
+    def stop_mass_storage(self, param=[]):
+        func = param[0]
+        self.menu[12]["value"] = "Start"
+        self.menu[12]["action"] = self.start_mass_storage
+        func.show_menu_screen()
+        os.system("sudo modprobe g_mass_storage -r")     
+
     def capture_image(self, param=[]):
-        self.menu[7]["action"] = self.blank_method
+        func = param[0]
+        self.menu[6]["value"] = "Starting..."
+        self.menu[6]["action"] = self.blank_method
+
+        self.menu[12]["value"] = "Start"
+        self.menu[12]["action"] = self.start_mass_storage
+        func.show_menu_screen()
+        os.system("sudo modprobe g_mass_storage -r")
+        time.sleep(1)
         _thread.start_new_thread(self.capture, (param,))
 
     def capture(self, param=[]):
@@ -147,6 +197,7 @@ class Menu:
             s.close()
         except:
             IPAddr = "Not Available"
+        print(IPAddr)
         func = param[0]
         self.menu[func.current_menu_index]["value"] = IPAddr
         func.show_menu_screen()
