@@ -73,7 +73,7 @@ class Functions:
             self.menu_obj.change_current_option(self.current_menu_index, current_option)
             self.show_menu_screen()
         else:
-            if (key == "key1"):
+            if (key == "key2"):
                 if self.menu_obj.stop_threads == False:
                     self.menu_obj.stop_threads = True
                     self.show_menu_screen()
@@ -82,3 +82,8 @@ class Functions:
                     self.menu_obj.zoom = True
                 else:
                     self.menu_obj.zoom = False
+            if (key == "key1"):
+                if self.menu_obj.cross == False:
+                    self.menu_obj.cross = True
+                else:
+                    self.menu_obj.cross = False

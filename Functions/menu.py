@@ -8,6 +8,7 @@ class Menu:
     def __init__(self, main_dir):
         self.previewing = False
         self.zoom = False
+        self.cross = True
         self.stop_threads = False
         self.capture_thread = None
         self.preview_thread = None
@@ -161,6 +162,7 @@ class Menu:
             disp,
             func,
             self.reset_preview,
+            lambda: self.cross,
             lambda: self.zoom,
             lambda: self.stop_threads))
         self.preview_thread.start()

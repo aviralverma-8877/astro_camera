@@ -4,7 +4,7 @@ from picamera import PiCamera
 from datetime import datetime
 from fractions import Fraction
 from threading import Condition
-from PIL import Image
+from PIL import Image, ImageDraw
 
 
 class StreamingOutput(object):
@@ -49,7 +49,7 @@ class Camera:
         self.camera.exposure_mode = 'off'
         self.wait_time = wait_time
 
-    def show_preview(self, height, width, disp, func, callback, zoom, stop):
+    def show_preview(self, height, width, disp, func, callback, cross, zoom, stop):
         output = StreamingOutput()
         #Uncomment the next line to change your Pi's Camera rotation (in degrees)
         framerate = 24
@@ -63,6 +63,11 @@ class Camera:
                 with output.condition:
                     output.condition.wait()
                 image = Image.open(output.buffer)
+                if cross():
+                    d = ImageDraw.Draw(image)
+                    d.line((width/2,(height/2-10),width/2,(height/2+10)), fill=128)
+                    d.line(((width/2-10),height/2,(width/2+10),height/2), fill=128)
+
                 disp.LCD_ShowImage(image,0,0)
                 if stop():
                     exit(0)
