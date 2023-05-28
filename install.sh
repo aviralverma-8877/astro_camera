@@ -31,6 +31,7 @@ sudo pip3 install picamera
 sudo pip install numpy
 
 cd ~/astro_camera
+sudo chmod +x main
 sudo ln -sf ~/astro_camera/astro_cam.service /etc/systemd/system/astro_cam.service
 sudo systemctl daemon-reload
 sudo systemctl start astro_cam.service
