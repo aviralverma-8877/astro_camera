@@ -3,8 +3,8 @@ Description=Astro Pi Camera
 
 [Service]
 User=root
-WorkingDirectory=~/astro_camera/
-ExecStart=/usr/bin/python3 /home/pi/astro_camera/main
+WorkingDirectory=/root/astro_camera/
+ExecStart=/usr/bin/python3 /root/astro_camera/main
 Restart=always
 
 [Install]
