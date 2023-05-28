@@ -143,6 +143,7 @@ class Menu:
                 "action" : self.show_preview,
                 "param" : []
             },
+<<<<<<< HEAD
             {
                 "head" : "Gallery",
                 "value" : "Open Gallery",
@@ -156,6 +157,9 @@ class Menu:
     def gallery(self, param=[]):
         pass
 
+=======
+        ]        
+>>>>>>> a19c7c96449840610dbd5a6d0c5c0f4912f5fafb
     def show_preview(self, param=[]):
         func = param[0]
         self.menu[14]["value"] = "Previewing..."

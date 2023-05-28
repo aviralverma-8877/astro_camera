@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #!/bin/bash
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 
@@ -28,6 +29,8 @@ sudo pip3 install spidev
 sudo pip3 install python3-picamera
 
 cd ~/astro_camera
+=======
+>>>>>>> a19c7c96449840610dbd5a6d0c5c0f4912f5fafb
 sudo ln -sf /home/pi/astro_camera/astro_cam.service /etc/systemd/system/astro_cam.service
 sudo systemctl daemon-reload
 sudo systemctl start astro_cam.service

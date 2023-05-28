@@ -1,7 +1,10 @@
 import time
 import io
+<<<<<<< HEAD
 import cv2
 import numpy as np
+=======
+>>>>>>> a19c7c96449840610dbd5a6d0c5c0f4912f5fafb
 from picamera import PiCamera
 from datetime import datetime
 from fractions import Fraction
