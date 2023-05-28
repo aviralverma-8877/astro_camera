@@ -30,7 +30,7 @@ sudo pip install numpy
 sudo pip install opencv-python
 
 cd ~/astro_camera
-sudo ln -sf /home/pi/astro_camera/astro_cam.service /etc/systemd/system/astro_cam.service
+sudo ln -sf ~/astro_camera/astro_cam.service /etc/systemd/system/astro_cam.service
 sudo systemctl daemon-reload
 sudo systemctl start astro_cam.service
 sudo systemctl enable astro_cam.service
