@@ -4,6 +4,7 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
+python -m ensurepip --upgrade
 sudo apt install git -y
 cd ~
 sudo git clone https://github.com/aviralverma-8877/astro_camera.git
@@ -25,7 +26,7 @@ sudo apt-get install python3-numpy -y
 sudo pip3 install RPi.GPIO
 sudo pip3 install spidev
 
-sudo pip3 install python3-picamera
+sudo pip3 install picamera
 sudo pip install numpy
 sudo pip install opencv-python
 
