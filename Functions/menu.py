@@ -2,10 +2,16 @@ from Camera import Camera
 import os
 import time
 import socket
-import _thread
+import threading
 
 class Menu:
     def __init__(self, main_dir):
+        self.previewing = False
+        self.zoom = False
+        self.cross = True
+        self.stop_threads = False
+        self.capture_thread = None
+        self.preview_thread = None
         self.current_selected = 0
         self.main_dir = main_dir
         self.camera = Camera(self.main_dir)
@@ -25,7 +31,7 @@ class Menu:
             {
                 "head" : "Resolution",
                 "unit" : "",
-                "current-option" : 14,
+                "current-option" : 9,
                 "options" : [
                     "176 x 120",
                     "352 x 240",
@@ -36,12 +42,7 @@ class Menu:
                     "1280 x 960",
                     "1280 x 1024",
                     "1600 x 1200",
-                    "1920 x 1080",
-                    "2048 x 1536",
-                    "2688 x 1520",
-                    "2592 x 1944",
-                    "3072 x 2048",
-                    "3280 x 2464"]
+                    "1920 x 1080"]
             },
             {
                 "head" : "Image Time",
@@ -52,7 +53,7 @@ class Menu:
             {
                 "head" : "Output",
                 "unit" : "",
-                "current-option" : 0,
+                "current-option" : 1,
                 "options" : ["RAW","JPEG"]
             },
             {
@@ -115,23 +116,145 @@ class Menu:
                 "action" : self.quit,
                 "param" : []
             },
+            {
+                "head" : "Mass Storage",
+                "value" : "Start",
+                "unit" : "",
+                "current-option" : None,
+                "options" : [],
+                "action" : self.start_mass_storage,
+                "param" : []
+            },
+            {
+                "head" : "Erase",
+                "value" : "Erase Images",
+                "unit" : "",
+                "current-option" : None,
+                "options" : [],
+                "action" : self.erase_storage,
+                "param" : []
+            },
+            {
+                "head" : "Preview",
+                "value" : "Show Preview",
+                "unit" : "",
+                "current-option" : None,
+                "options" : [],
+                "action" : self.show_preview,
+                "param" : []
+            },
+            {
+                "head" : "Gallery",
+                "value" : "Open Gallery",
+                "unit" : "",
+                "current-option" : None,
+                "options" : [],
+                "action" : self.gallery,
+                "param" : []
+            },
         ]
+    def gallery(self, param=[]):
+        pass
+
+    def show_preview(self, param=[]):
+        func = param[0]
+        self.menu[14]["value"] = "Previewing..."
+        self.menu[14]["action"] = self.blank_method
+        func.show_menu_screen()
+
+        height = func.display.height
+        width = func.display.width
+        disp = func.display.disp
+        self.stop_threads = False
+        self.previewing = True
+        self.zoom = False
+        self.preview_thread = threading.Thread(target=self.camera.show_preview, args=(
+            height,
+            width,
+            disp,
+            func,
+            self.reset_preview,
+            lambda: self.cross,
+            lambda: self.zoom,
+            lambda: self.stop_threads))
+        self.preview_thread.start()
+
+    def reset_preview(self, param=[]):
+        func = param[0]
+        self.previewing = False
+        self.zoom = False
+        self.menu[14]["value"] = "Show Preview"
+        self.menu[14]["action"] = self.show_preview
+        func.show_menu_screen()
+
+    def stop_preview(self, param=[]):
+        func = param[0]
+        if self.stop_threads == False:
+                self.stop_threads = True
+                func.show_menu_screen()
+
+    def erase_storage(self, param=[]):
+        func = param[0]
+        self.menu[13]["value"] = "Erasing..."
+        self.menu[13]["action"] = self.blank_method
+
+        self.menu[12]["value"] = "Start"
+        self.menu[12]["action"] = self.start_mass_storage
+        func.show_menu_screen()
+        os.system("sudo modprobe g_mass_storage -r")
+        time.sleep(1)
+        os.system("sudo rm -r /mnt/usb_share/*")
+        self.menu[13]["value"] = "Erase Images"
+        self.menu[13]["action"] = self.erase_storage
+        func.show_menu_screen()
+
+    def start_mass_storage(self, param=[]):
+        func = param[0]
+        self.menu[12]["value"] = "Stop"
+        self.menu[12]["action"] = self.stop_mass_storage
+        func.show_menu_screen()
+        os.system("sudo modprobe g_mass_storage file=/piusb.bin removable=y ro=1 stall=0")
+    
+    def stop_mass_storage(self, param=[]):
+        func = param[0]
+        self.menu[12]["value"] = "Start"
+        self.menu[12]["action"] = self.start_mass_storage
+        func.show_menu_screen()
+        os.system("sudo modprobe g_mass_storage -r")     
 
     def capture_image(self, param=[]):
-        self.menu[7]["action"] = self.blank_method
-        _thread.start_new_thread(self.capture, (param,))
+        func = param[0]
+        self.menu[6]["value"] = "Starting..."
+        self.menu[6]["action"] = self.blank_method
 
-    def capture(self, param=[]):
+        self.menu[12]["value"] = "Start"
+        self.menu[12]["action"] = self.start_mass_storage
+        func.show_menu_screen()
+        os.system("sudo modprobe g_mass_storage -r")
+        time.sleep(1)
+        self.stop_threads = False
+        self.capture_thread = threading.Thread(target=self.capture, args=(lambda: self.stop_threads,param,))
+        self.capture_thread.start()
+
+    def capture(self, stop, param=[]):
         image_count = int(self.menu[5]["options"][self.menu[5]["current-option"]])
         self.camera.configure(self.menu)
-        for i in range(1, image_count+1):
-            func = param[0]
-            self.menu[6]["value"] = "Capturing " + str(i)
-            func.show_menu_screen()
-            self.camera.capture()
+        try:
+            for i in range(1, image_count+1):
+                func = param[0]
+                self.menu[6]["value"] = "Capturing " + str(i)
+                func.show_menu_screen()
+                self.camera.capture()
+                if stop():
+                    self.menu[6]["value"] = "Start Capture"
+                    func.show_menu_screen()
+                    self.menu[6]["action"] = self.capture_image
+                    exit(0)
+        finally:
+            self.camera.camera.close()
         self.menu[6]["value"] = "Start Capture"
         func.show_menu_screen()
-        self.menu[6]["action"] = self.capture
+        self.menu[6]["action"] = self.capture_image
 
     def change_current_option(self, menu_index, option_index):
         self.menu[menu_index]["current-option"] = option_index
