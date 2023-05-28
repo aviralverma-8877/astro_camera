@@ -26,9 +26,9 @@ sudo apt-get install python3-numpy -y
 sudo pip3 install RPi.GPIO
 sudo pip3 install spidev
 
+sudo apt install python3-opencv -y
 sudo pip3 install picamera
 sudo pip install numpy
-sudo pip install opencv-python
 
 cd ~/astro_camera
 sudo ln -sf ~/astro_camera/astro_cam.service /etc/systemd/system/astro_cam.service
