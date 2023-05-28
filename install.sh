@@ -4,7 +4,7 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-python -m ensurepip --upgrade
+python -m ensure pip --upgrade
 sudo apt install git -y
 cd ~
 sudo git clone https://github.com/aviralverma-8877/astro_camera.git
