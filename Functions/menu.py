@@ -1,4 +1,5 @@
 from Camera import Camera
+from PIL import Image
 import os
 import time
 import socket
@@ -12,6 +13,7 @@ class Menu:
         self.stop_threads = False
         self.capture_thread = None
         self.preview_thread = None
+        self.gallery_thread = None
         self.current_selected = 0
         self.main_dir = main_dir
         self.camera = Camera(self.main_dir)
@@ -153,8 +155,70 @@ class Menu:
                 "param" : []
             },
         ]
+    
+    def reset_gallery(self, param=[]):
+        self.previewing = False
+        self.zoom = False
+        self.cross = False
+        func = param[0]
+        self.menu[15]["value"] = "Open Gallery"
+        self.menu[15]["action"] = self.gallery
+        func.show_menu_screen()
+
+    def open_gallery(self, func, callback, next, prev, stop):
+        dir_list = os.listdir("/mnt/usb_share/")
+        total_images = len(dir_list)
+        index = 0
+        p_index = 1
+        try:
+            while(True):
+                if stop():
+                    exit(0)
+                if next():
+                    self.zoom = False
+                    index += 1
+                    if index >= total_images:
+                        index = 0
+                if prev():
+                    self.cross = False
+                    index -= 1
+                    if index < 0:
+                        index = total_images-1
+                if p_index != index:
+                    if dir_list[index].lower().endswith(('.png', '.jpg', '.jpeg')):
+                        img = Image.open(f"/mnt/usb_share/{dir_list[index]}")
+                        new_img = img.resize((128,128))
+                        img.close()
+                        func.display.disp.LCD_ShowImage(new_img,0,0)
+                    p_index = index
+        finally:
+            callback([func])
+
     def gallery(self, param=[]):
-        pass
+        dir_list = os.listdir("/mnt/usb_share/")
+        if len(dir_list) > 0:
+            total_images = len(dir_list)
+            func = param[0]
+            self.menu[15]["value"] = f"{str(total_images)} Images"
+            self.menu[15]["action"] = self.blank_method
+            func.show_menu_screen()
+
+            self.previewing = True
+            self.stop_threads = False
+            self.zoom = False
+            self.cross = False
+            self.gallery_thread = threading.Thread(target=self.open_gallery, args=(
+                func,
+                self.reset_gallery,
+                lambda: self.zoom,
+                lambda: self.cross,
+                lambda: self.stop_threads))
+            self.gallery_thread.start()
+        else:
+            func = param[0]
+            self.menu[15]["value"] = "No Image"
+            self.menu[15]["action"] = self.gallery
+            func.show_menu_screen()
 
     def show_preview(self, param=[]):
         func = param[0]
@@ -168,6 +232,7 @@ class Menu:
         self.stop_threads = False
         self.previewing = True
         self.zoom = False
+        self.cross = False
         self.preview_thread = threading.Thread(target=self.camera.show_preview, args=(
             height,
             width,
@@ -183,6 +248,7 @@ class Menu:
         func = param[0]
         self.previewing = False
         self.zoom = False
+        self.cross = False
         self.menu[14]["value"] = "Show Preview"
         self.menu[14]["action"] = self.show_preview
         func.show_menu_screen()
