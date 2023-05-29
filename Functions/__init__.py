@@ -74,16 +74,16 @@ class Functions:
             self.show_menu_screen()
         else:
             if (key == "key2"):
-                if self.menu_obj.stop_threads == False:
-                    self.menu_obj.stop_threads = True
+                if self.menu_obj.k2 == False:
+                    self.menu_obj.k2 = True
                     self.show_menu_screen()
             if (key == "key3"):
-                if self.menu_obj.zoom == False:
-                    self.menu_obj.zoom = True
+                if self.menu_obj.k3 == False:
+                    self.menu_obj.k3 = True
                 else:
-                    self.menu_obj.zoom = False
+                    self.menu_obj.k3 = False
             if (key == "key1"):
-                if self.menu_obj.cross == False:
-                    self.menu_obj.cross = True
+                if self.menu_obj.k1 == False:
+                    self.menu_obj.k1 = True
                 else:
-                    self.menu_obj.cross = False
+                    self.menu_obj.k1 = False

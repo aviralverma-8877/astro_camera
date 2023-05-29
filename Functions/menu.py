@@ -8,9 +8,9 @@ import threading
 class Menu:
     def __init__(self, main_dir):
         self.previewing = False
-        self.zoom = False
-        self.cross = True
-        self.stop_threads = False
+        self.k1 = False
+        self.k3 = False
+        self.k2 = False
         self.capture_thread = None
         self.preview_thread = None
         self.gallery_thread = None
@@ -158,8 +158,8 @@ class Menu:
     
     def reset_gallery(self, param=[]):
         self.previewing = False
-        self.zoom = False
-        self.cross = False
+        self.k3 = False
+        self.k1 = False
         func = param[0]
         self.menu[15]["value"] = "Open Gallery"
         self.menu[15]["action"] = self.gallery
@@ -175,12 +175,12 @@ class Menu:
                 if stop():
                     exit(0)
                 if next():
-                    self.zoom = False
+                    self.k3 = False
                     index += 1
                     if index >= total_images:
                         index = 0
                 if prev():
-                    self.cross = False
+                    self.k1 = False
                     index -= 1
                     if index < 0:
                         index = total_images-1
@@ -204,15 +204,15 @@ class Menu:
             func.show_menu_screen()
 
             self.previewing = True
-            self.stop_threads = False
-            self.zoom = False
-            self.cross = False
+            self.k2 = False
+            self.k3 = False
+            self.k1 = False
             self.gallery_thread = threading.Thread(target=self.open_gallery, args=(
                 func,
                 self.reset_gallery,
-                lambda: self.zoom,
-                lambda: self.cross,
-                lambda: self.stop_threads))
+                lambda: self.k3,
+                lambda: self.k1,
+                lambda: self.k2))
             self.gallery_thread.start()
         else:
             func = param[0]
@@ -229,34 +229,34 @@ class Menu:
         height = func.display.height
         width = func.display.width
         disp = func.display.disp
-        self.stop_threads = False
+        self.k2 = False
         self.previewing = True
-        self.zoom = False
-        self.cross = False
+        self.k3 = False
+        self.k1 = False
         self.preview_thread = threading.Thread(target=self.camera.show_preview, args=(
             height,
             width,
             disp,
             func,
             self.reset_preview,
-            lambda: self.cross,
-            lambda: self.zoom,
-            lambda: self.stop_threads))
+            lambda: self.k1,
+            lambda: self.k3,
+            lambda: self.k2))
         self.preview_thread.start()
 
     def reset_preview(self, param=[]):
         func = param[0]
         self.previewing = False
-        self.zoom = False
-        self.cross = False
+        self.k3 = False
+        self.k1 = False
         self.menu[14]["value"] = "Show Preview"
         self.menu[14]["action"] = self.show_preview
         func.show_menu_screen()
 
     def stop_preview(self, param=[]):
         func = param[0]
-        if self.stop_threads == False:
-                self.stop_threads = True
+        if self.k2 == False:
+                self.k2 = True
                 func.show_menu_screen()
 
     def erase_storage(self, param=[]):
@@ -298,8 +298,8 @@ class Menu:
         func.show_menu_screen()
         os.system("sudo modprobe g_mass_storage -r")
         time.sleep(1)
-        self.stop_threads = False
-        self.capture_thread = threading.Thread(target=self.capture, args=(lambda: self.stop_threads,param,))
+        self.k2 = False
+        self.capture_thread = threading.Thread(target=self.capture, args=(lambda: self.k2,param,))
         self.capture_thread.start()
 
     def capture(self, stop, param=[]):
