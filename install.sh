@@ -46,3 +46,5 @@ sudo ln -sf ~/astro_camera/astro_cam.service /etc/systemd/system/astro_cam.servi
 sudo systemctl daemon-reload
 sudo systemctl start astro_cam.service
 sudo systemctl enable astro_cam.service
+
+sudo reboot
