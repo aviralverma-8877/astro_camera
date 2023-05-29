@@ -31,13 +31,13 @@ sudo apt install python3-opencv -y
 sudo pip3 install picamera
 sudo pip install numpy
 
-sudo cat "dtoverlay=dwc2" >> /boot/config.txt
-sudo cat "dwc2" >> /etc/modules
+sudo echo "dtoverlay=dwc2" >> /boot/config.txt
+sudo echo "dwc2" >> /etc/modules
 
 sudo dd bs=1M if=/dev/zero of=/piusb.bin count=2048
 sudo mkdosfs /piusb.bin -F 32 -I
 sudo mkdir /mnt/usb_share
-sudo cat "/piusb.bin /mnt/usb_share vfat users,umask=000 0 2" >> /etc/fstab
+sudo echo "/piusb.bin /mnt/usb_share vfat users,umask=000 0 2" >> /etc/fstab
 sudo mount -a
 
 cd ~/astro_camera
