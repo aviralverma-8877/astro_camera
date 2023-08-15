@@ -308,7 +308,7 @@ class LCD:
 		pix[...,[0]] = np.add(np.bitwise_and(img[...,[0]],0xF8),np.right_shift(img[...,[1]],5))
 		pix[...,[1]] = np.add(np.bitwise_and(np.left_shift(img[...,[1]],3),0xE0),np.right_shift(img[...,[2]],3))
 		pix = pix.flatten().tolist()
-		self.LCD_SetWindows(0, 0, self.width , self.height)
+		self.LCD_SetWindows(Xstart, Ystart, self.width , self.height)
 		GPIO.output(LCD_Config.LCD_DC_PIN, GPIO.HIGH)
 		for i in range(0,len(pix),4096):
 			LCD_Config.SPI_Write_Byte(pix[i:i+4096])
