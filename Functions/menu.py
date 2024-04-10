@@ -287,6 +287,7 @@ class Menu:
         self.menu[12]["value"] = "Start"
         self.menu[12]["action"] = self.start_mass_storage
         func.show_menu_screen()
+        os.system("sudo systemctl stop smbd")
         os.system("sudo modprobe g_mass_storage -r")     
 
     def capture_image(self, param=[]):

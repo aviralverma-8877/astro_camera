@@ -44,6 +44,7 @@ sudo systemctl stop smbd
 sudo echo "[Astro CAM]" >> /etc/samba/smb.conf
 sudo echo "path = /mnt/usb_share" >> /etc/samba/smb.conf
 sudo echo "writeable=Yes" >> /etc/samba/smb.conf
+sudo echo "security = share" >> /etc/samba/smb.conf
 sudo echo "create mask=0777" >> /etc/samba/smb.conf
 sudo echo "directory mask=0777" >> /etc/samba/smb.conf
 sudo echo "public=yes" >> /etc/samba/smb.conf
