@@ -280,14 +280,14 @@ class Menu:
         self.menu[12]["action"] = self.stop_mass_storage
         func.show_menu_screen()
         os.system("sudo modprobe g_mass_storage file=/piusb.bin removable=y ro=1 stall=0")
-        os.system("sudo systemctl start smbd")
+        os.system("sudo systemctl start smbd.service")
     
     def stop_mass_storage(self, param=[]):
         func = param[0]
         self.menu[12]["value"] = "Start"
         self.menu[12]["action"] = self.start_mass_storage
         func.show_menu_screen()
-        os.system("sudo systemctl stop smbd")
+        os.system("sudo systemctl stop smbd.service")
         os.system("sudo modprobe g_mass_storage -r")     
 
     def capture_image(self, param=[]):
