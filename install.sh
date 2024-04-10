@@ -20,6 +20,7 @@ git clone https://github.com/WiringPi/WiringPi
 cd WiringPi
 ./build
 
+sudo apt-get install samba samba-common-bin -y
 sudo apt-get install python3-pip -y
 sudo apt-get install python3-pil -y
 sudo apt-get install python3-numpy -y
@@ -38,6 +39,14 @@ sudo mkdosfs /piusb.bin -F 32 -I
 sudo mkdir /mnt/usb_share
 sudo echo "/piusb.bin /mnt/usb_share vfat users,umask=000 0 2" >> /etc/fstab
 sudo mount -a
+
+sudo systemctl stop smbd
+sudo echo "[Astro CAM]" >> /etc/samba/smb.conf
+sudo echo "path = /mnt/usb_share" >> /etc/samba/smb.conf
+sudo echo "writeable=Yes" >> /etc/samba/smb.conf
+sudo echo "create mask=0777" >> /etc/samba/smb.conf
+sudo echo "directory mask=0777" >> /etc/samba/smb.conf
+sudo echo "public=yes" >> /etc/samba/smb.conf
 
 cd ~/astro_camera
 sudo chmod +x main
