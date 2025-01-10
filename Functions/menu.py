@@ -33,18 +33,9 @@ class Menu:
             {
                 "head" : "Resolution",
                 "unit" : "",
-                "current-option" : 9,
+                "current-option" : 0,
                 "options" : [
-                    "176 x 120",
-                    "352 x 240",
-                    "704 x 240",
-                    "704 x 480",
-                    "720 x 480",
-                    "1280 x 720",
-                    "1280 x 960",
-                    "1280 x 1024",
-                    "1600 x 1200",
-                    "1920 x 1080"]
+                    "Native"]
             },
             {
                 "head" : "Image Time",
