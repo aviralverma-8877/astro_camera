@@ -28,7 +28,7 @@ sudo pip3 install RPi.GPIO --break-system-packages
 sudo pip3 install spidev --break-system-packages
 
 sudo apt install python3-opencv -y
-sudo pip3 install picamera --break-system-packages
+sudo pip3 install picamera2 --break-system-packages
 sudo pip install numpy --break-system-packages
 
 sudo echo "dtoverlay=dwc2" >> /boot/config.txt
