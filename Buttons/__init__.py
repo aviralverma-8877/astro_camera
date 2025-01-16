@@ -36,60 +36,44 @@ class Buttons:
         GPIO.cleanup()
         
     def up_released(self):
-        #print("up_released")
-        pass
+        self.func.action("up-r")
 
     def up_pressed(self):
-        #print("up_pressed")
         self.func.action("up")
 
     def left_released(self):
-        #print("left_released")
-        pass
+        self.func.action("left-r")
     def left_pressed(self):
-        #print("left_pressed")
         self.func.action("left")
         
     def right_released(self):
-        #print("right_released")
-        pass
+        self.func.action("right-r")
     def right_pressed(self):
-        #print("right_pressed")
         self.func.action("right")
     
     def down_released(self):
-        #print("down_released")
-        pass
+        self.func.action("down-r")
     def down_pressed(self):
-        #print("down_pressed")
         self.func.action("down")
         
     def center_released(self):
-        #print("center_released")
-        pass
+        self.func.action("center-r")
     def center_pressed(self):
-        #print("center_pressed")
         self.func.action("center")
 
     def key1_released(self):
-        #print("key1_released")
-        pass
+        self.func.action("key1-r")
     def key1_pressed(self):
-        #print("key1_pressed")
         self.func.action("key1")
         
     def key2_released(self):
-        #print("key2_released")
-        pass
+        self.func.action("key2-r")
     def key2_pressed(self):
-        #print("key2_pressed")
         self.func.action("key2")
 
     def key3_released(self):
-        #print("key3_released")
-        pass
+        self.func.action("key3-r")
     def key3_pressed(self):
-        #print("key3_pressed")
         self.func.action("key3")
         
     def listen(self):

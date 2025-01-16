@@ -77,13 +77,20 @@ class Functions:
                 if self.menu_obj.k2 == False:
                     self.menu_obj.k2 = True
                     self.show_menu_screen()
-            if (key == "key3"):
+            elif (key == "key2-r"):
+                if self.menu_obj.k2 == True:
+                    self.menu_obj.k2 = False
+
+            elif (key == "key3"):
                 if self.menu_obj.k3 == False:
                     self.menu_obj.k3 = True
-                else:
+            elif (key == "key3-r"):
+                if self.menu_obj.k3 == True:
                     self.menu_obj.k3 = False
-            if (key == "key1"):
+
+            elif (key == "key1"):
                 if self.menu_obj.k1 == False:
                     self.menu_obj.k1 = True
-                else:
+            elif (key == "key1-r"):
+                if self.menu_obj.k1 == True:
                     self.menu_obj.k1 = False

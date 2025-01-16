@@ -60,27 +60,39 @@ class Camera:
         output = StreamingOutput()
         encoder = JpegEncoder()
         #Uncomment the next line to change your Pi's Camera rotation (in degrees)
-        framerate = 60
         self.camera = Picamera2()
         self.camera.configure(self.camera.create_video_configuration(main={"size": (height, width)}))
         self.camera.start_recording(encoder, FileOutput(output))
         try:
+            zoomed = False
+            crossed = False
+            (w, h) = self.camera.camera_properties['PixelArraySize']
+            x = int((w/2) - 128)
+            y = int((h/2) - 128)
             while True:
                 with output.condition:
                     output.condition.wait()
                 image = Image.open(output.buffer)
                 if cross():
+                    if not crossed:
+                        crossed = True
+                    else:
+                        crossed = False
+                if crossed:
                     d = ImageDraw.Draw(image)
                     d.line((width/2,(height/2-10),width/2,(height/2+10)), fill=128)
                     d.line(((width/2-10),height/2,(width/2+10),height/2), fill=128)
-
+                    crossed = True
                 disp.LCD_ShowImage(image,0,0)
                 if stop():
                     exit(0)
                 if zoom():
-                    self.camera.zoom = (0.4,0.4,0.2,0.2)
-                else:
-                    self.camera.zoom = (0,0,width,height)
+                    if not zoomed:
+                        self.camera.set_controls({"ScalerCrop": (x, y, 256, 256)})
+                        zoomed = True
+                    else:
+                        self.camera.set_controls({"ScalerCrop": (0, 0, w, h)})
+                        zoomed = False
         finally:
             self.camera.stop_recording()
             self.camera.close()
