@@ -148,4 +148,4 @@ class Buttons:
                 if self.key_mapper["key3"]:
                     self.key_mapper["key3"] = False
                     self.key3_released()
-            time.sleep(0.1)
+            time.sleep(0.01)

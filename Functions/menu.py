@@ -22,7 +22,7 @@ class Menu:
                 "head" : "ISO",
                 "unit" : "",
                 "current-option" : 0,
-                "options" : ["100","200","300","400","500","600","700","800"]
+                "options" : ["Auto","100","200","300","400","500","600","700","800"]
             },
             {
                 "head" : "Shutter",
@@ -34,8 +34,7 @@ class Menu:
                 "head" : "Resolution",
                 "unit" : "",
                 "current-option" : 0,
-                "options" : [
-                    "Native"]
+                "options" : ["Native"]
             },
             {
                 "head" : "Image Time",
@@ -223,6 +222,7 @@ class Menu:
         self.k3 = False
         self.k1 = False
         self.preview_thread = threading.Thread(target=self.camera.show_preview, args=(
+            self.menu,
             height,
             width,
             disp,
