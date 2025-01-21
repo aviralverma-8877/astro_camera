@@ -45,7 +45,7 @@ class Menu:
             {
                 "head" : "Output",
                 "unit" : "",
-                "current-option" : 1,
+                "current-option" : 0,
                 "options" : ["RAW","JPEG"]
             },
             {
