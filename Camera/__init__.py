@@ -67,8 +67,8 @@ class Camera:
             zoomed = False
             crossed = False
             (w, h) = self.camera.camera_properties['PixelArraySize']
-            x = int((w/2) - 128)
-            y = int((h/2) - 128)
+            x = int((w/2) - 512)
+            y = int((h/2) - 512)
             while True:
                 with output.condition:
                     output.condition.wait()
@@ -88,11 +88,12 @@ class Camera:
                     exit(0)
                 if zoom():
                     if not zoomed:
-                        self.camera.set_controls({"ScalerCrop": (x, y, 256, 256)})
+                        self.camera.set_controls({"ScalerCrop": (x, y, 1024, 1024)})
                         zoomed = True
                     else:
                         self.camera.set_controls({"ScalerCrop": (0, 0, w, h)})
                         zoomed = False
+                time.sleep(0.01)
         finally:
             self.camera.stop_recording()
             self.camera.close()

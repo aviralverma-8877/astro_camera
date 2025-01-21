@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-
+import time
 KEY_UP_PIN     = 6 
 KEY_DOWN_PIN   = 19
 KEY_LEFT_PIN   = 5
@@ -37,7 +37,6 @@ class Buttons:
         
     def up_released(self):
         self.func.action("up-r")
-
     def up_pressed(self):
         self.func.action("up")
 
@@ -149,4 +148,4 @@ class Buttons:
                 if self.key_mapper["key3"]:
                     self.key_mapper["key3"] = False
                     self.key3_released()
-                
+            time.sleep(0.1)

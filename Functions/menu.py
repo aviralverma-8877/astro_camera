@@ -166,12 +166,10 @@ class Menu:
                 if stop():
                     exit(0)
                 if next():
-                    self.k3 = False
                     index += 1
                     if index >= total_images:
                         index = 0
                 if prev():
-                    self.k1 = False
                     index -= 1
                     if index < 0:
                         index = total_images-1
