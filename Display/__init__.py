@@ -1,10 +1,10 @@
-from . import LCD_1in44
+from Display.LCD_1in44 import LCD, SCAN_DIR_DFT
 from PIL import Image,ImageDraw,ImageFont
 
 class Display:
     def __init__(self, main_dir) -> None:
-        self.disp = LCD_1in44.LCD()
-        self.Lcd_ScanDir = LCD_1in44.SCAN_DIR_DFT
+        self.disp = LCD()
+        self.Lcd_ScanDir = SCAN_DIR_DFT
         self.disp.LCD_Init(self.Lcd_ScanDir)
         self.width = 128
         self.height = 128
