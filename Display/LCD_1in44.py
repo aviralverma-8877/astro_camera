@@ -65,7 +65,7 @@ class LCD:
 		self.LCD_Scan_Dir = SCAN_DIR_DFT
 		self.LCD_X_Adjust = LCD_X
 		self.LCD_Y_Adjust = LCD_Y
-		GPIO.setmode(GPIO.BCM)
+		GPIO.setup(LCD_Config.LCD_DC_PIN, GPIO.OUT, pull_up_down=GPIO.PUD_UP)
 
 	"""    Hardware reset     """
 	def  LCD_Reset(self):
