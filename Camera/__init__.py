@@ -45,8 +45,7 @@ class Camera:
         config = self.camera.create_still_configuration(
             main={"size": mode['size']},
             raw={'format': mode['unpacked']},
-            lores={"size": mode['size']},
-            sensor={'output_size': mode['size'], 'bit_depth': mode['bit_depth']})
+            lores={"size": mode['size']})
         self.camera.configure(config)
         if(menu[0]["options"][menu[0]["current-option"]] not in ["Auto"]):
             shutter_speed = int(float(menu[1]["options"][menu[1]["current-option"]]) * 1000000)
