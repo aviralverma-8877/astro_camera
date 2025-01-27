@@ -11,6 +11,7 @@ KEY3_PIN       = 16
 
 class Buttons:
     def __init__(self, func) -> None:
+        GPIO.setwarnings(False) 
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(KEY_UP_PIN,      GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(KEY_DOWN_PIN,    GPIO.IN, pull_up_down=GPIO.PUD_UP)

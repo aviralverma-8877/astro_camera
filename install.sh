@@ -4,6 +4,7 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
+sudo raspi-config nonint do_spi 0
 sudo apt update && sudo apt upgrade -y
 sudo apt install python3-pip -y
 sudo apt install git -y
