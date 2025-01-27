@@ -2,7 +2,7 @@
 Description=Astro Pi Camera
 
 [Service]
-Type=simple
+Type=idle
 User=root
 WorkingDirectory=/root/astro_camera/
 ExecStart=/usr/bin/python3 /root/astro_camera/main
