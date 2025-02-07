@@ -2,7 +2,7 @@ import time
 import io
 import cv2
 import numpy as np
-from picamera2.encoders import JpegEncoder
+from picamera2.encoders import JpegEncoder, MJPEGEncoder
 from picamera2 import Picamera2, Preview
 from picamera2.outputs import FileOutput
 from datetime import datetime
@@ -59,15 +59,23 @@ class Camera:
         self.wait_time = wait_time
 
     def show_preview(self, menu, height, width, disp, func, callback, cross, zoom, stop):
+        self.image_type = menu[4]["options"][menu[4]["current-option"]]
         output = StreamingOutput()
-        encoder = JpegEncoder()
+        encoder = MJPEGEncoder()
         #Uncomment the next line to change your Pi's Camera rotation (in degrees)
         self.camera = Picamera2()
-        self.camera.configure(self.camera.create_video_configuration(main={"size": (height, width)}))
+        modes = self.camera.sensor_modes
+        if(self.image_type == "RAW"):
+            mode = modes[1]
+        else:
+            mode = modes[0]
+        self.camera.configure(self.camera.create_video_configuration(main={"size": mode['size']}, lores={"size": (height,width)}, encode="lores"))
         if(menu[0]["options"][menu[0]["current-option"]] not in ["Auto"]):
+            shutter_speed = int(float(menu[1]["options"][menu[1]["current-option"]]) * 1000000)
             iso = int(menu[0]["options"][menu[0]["current-option"]])
             self.camera.set_controls({
-                    "AnalogueGain": int(iso)/100
+                    "AnalogueGain": int(iso)/100,
+                    "ExposureTime": int(shutter_speed)
                 })
         self.camera.start_recording(encoder, FileOutput(output))
         try:
