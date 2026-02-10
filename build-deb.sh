@@ -81,6 +81,7 @@ cp -r Buttons "$PACKAGE_DIR/opt/astro_camera/"
 cp -r Camera "$PACKAGE_DIR/opt/astro_camera/"
 cp -r Display "$PACKAGE_DIR/opt/astro_camera/"
 cp -r Functions "$PACKAGE_DIR/opt/astro_camera/"
+cp -r WebInterface "$PACKAGE_DIR/opt/astro_camera/"
 cp -r fonts "$PACKAGE_DIR/opt/astro_camera/"
 cp -r images "$PACKAGE_DIR/opt/astro_camera/"
 
