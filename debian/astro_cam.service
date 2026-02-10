@@ -1,0 +1,21 @@
+[Unit]
+Description=Astro Camera - Astrophotography System
+Documentation=https://github.com/aviralverma-8877/astro_camera
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/astro_camera
+ExecStart=/usr/bin/python3 /opt/astro_camera/main
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+# Security settings
+NoNewPrivileges=false
+PrivateTmp=false
+
+[Install]
+WantedBy=multi-user.target

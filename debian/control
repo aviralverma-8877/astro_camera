@@ -1,0 +1,24 @@
+Package: astro-camera
+Version: 2.0.0
+Section: graphics
+Priority: optional
+Architecture: armhf
+Maintainer: Aviral Verma <aviralverma-8877@github.com>
+Homepage: https://github.com/aviralverma-8877/astro_camera
+Depends: python3 (>= 3.7), python3-pil, python3-numpy, python3-opencv, python3-picamera2, python3-spidev
+Recommends: python3-lgpio
+Suggests: samba
+Description: High-performance Raspberry Pi astrophotography camera system
+ Astro Camera transforms your Raspberry Pi into a standalone astrophotography
+ platform with physical button controls and an integrated LCD display.
+ .
+ Features:
+  - RAW & JPEG capture with configurable exposure settings
+  - Manual controls: ISO, shutter speed, multi-shot sequences
+  - Live preview with zoom and crosshair overlay
+  - Built-in gallery for reviewing images on LCD
+  - USB mass storage mode (Pi Zero models)
+  - Physical button interface with 8 buttons
+  - 128x128 LCD display (Waveshare 1.44")
+  - Efficient operation with minimal CPU usage
+  - Pi 5 compatible with automatic GPIO backend selection

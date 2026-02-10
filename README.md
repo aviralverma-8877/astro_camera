@@ -126,7 +126,45 @@ The installer automatically handles these:
 
 ## 🚀 Installation
 
-### Quick Install
+### Method 1: Debian Package (Recommended) 📦
+
+**The easiest way to install Astro Camera - single command installation:**
+
+```bash
+# Download the latest release
+wget https://github.com/aviralverma-8877/astro_camera/releases/download/v2.0.0/astro-camera_2.0.0_armhf.deb
+
+# Install the package
+sudo apt install ./astro-camera_2.0.0_armhf.deb
+```
+
+The package automatically:
+- ✅ Installs all dependencies
+- ✅ Detects your Pi model and installs correct GPIO library
+- ✅ Enables SPI interface
+- ✅ Creates directories with proper permissions
+- ✅ Installs systemd service
+- ✅ Configures auto-start on boot
+
+**After installation:**
+```bash
+sudo reboot
+```
+
+The service starts automatically. Check status with:
+```bash
+sudo systemctl status astro_cam.service
+```
+
+**To remove:**
+```bash
+sudo apt remove astro-camera  # Keep configuration
+sudo apt purge astro-camera   # Remove everything
+```
+
+---
+
+### Method 2: Installation Script
 
 **For Raspberry Pi OS Bookworm (or Bullseye) on any Pi model:**
 
@@ -160,7 +198,9 @@ sudo reboot
 
 The Astro Camera service will start automatically on boot.
 
-### Manual Installation
+---
+
+### Method 3: Manual Installation
 
 If you prefer manual installation:
 

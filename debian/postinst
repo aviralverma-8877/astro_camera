@@ -1,0 +1,79 @@
+#!/bin/bash
+set -e
+
+# Post-installation script for astro-camera
+
+echo "Configuring Astro Camera..."
+
+# Enable SPI interface
+if ! grep -q "^dtparam=spi=on" /boot/config.txt 2>/dev/null; then
+    echo "Enabling SPI interface..."
+    if command -v raspi-config >/dev/null 2>&1; then
+        raspi-config nonint do_spi 0 || true
+    else
+        echo "dtparam=spi=on" >> /boot/config.txt
+    fi
+fi
+
+# Create storage directory
+echo "Creating storage directory..."
+mkdir -p /mnt/astro_camera_storage
+chmod 777 /mnt/astro_camera_storage
+
+# Create log directory
+echo "Creating log directory..."
+mkdir -p /var/log/astro_camera
+chmod 755 /var/log/astro_camera
+
+# Install systemd service
+echo "Installing systemd service..."
+systemctl daemon-reload
+systemctl enable astro_cam.service || true
+
+# Detect Pi model and install appropriate GPIO library
+echo "Detecting Raspberry Pi model..."
+if [ -f /proc/device-tree/model ]; then
+    PI_MODEL=$(cat /proc/device-tree/model)
+    if [[ "$PI_MODEL" == *"Raspberry Pi 5"* ]]; then
+        echo "Pi 5 detected - ensuring lgpio is installed..."
+        apt-get install -y python3-lgpio 2>/dev/null || pip3 install lgpio --break-system-packages 2>/dev/null || true
+    else
+        echo "Older Pi model detected - ensuring RPi.GPIO is available..."
+        apt-get install -y python3-rpi.gpio 2>/dev/null || pip3 install RPi.GPIO 2>/dev/null || true
+    fi
+fi
+
+# Provide installation summary
+cat <<EOF
+
+╔════════════════════════════════════════════════════════════╗
+║           Astro Camera Installation Complete!              ║
+╚════════════════════════════════════════════════════════════╝
+
+✓ Application installed to: /opt/astro_camera
+✓ Storage directory: /mnt/astro_camera_storage
+✓ Logs: /var/log/astro_camera/
+✓ Service: astro_cam.service (enabled)
+
+IMPORTANT: A system reboot is required to:
+  - Enable SPI interface
+  - Start the Astro Camera service
+
+To reboot now:
+  sudo reboot
+
+To start the service manually (after reboot):
+  sudo systemctl start astro_cam.service
+
+To check service status:
+  sudo systemctl status astro_cam.service
+
+To view logs:
+  sudo journalctl -u astro_cam.service -f
+
+For documentation, visit:
+  https://github.com/aviralverma-8877/astro_camera
+
+EOF
+
+exit 0

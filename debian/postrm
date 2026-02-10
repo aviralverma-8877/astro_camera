@@ -1,0 +1,42 @@
+#!/bin/bash
+set -e
+
+# Post-removal script for astro-camera
+
+case "$1" in
+    purge)
+        echo "Purging Astro Camera configuration and data..."
+
+        # Remove log directory
+        if [ -d /var/log/astro_camera ]; then
+            echo "Removing log directory..."
+            rm -rf /var/log/astro_camera
+        fi
+
+        # Ask user about storage directory
+        echo ""
+        echo "Note: Captured images are stored in /mnt/astro_camera_storage"
+        echo "This directory has NOT been automatically removed."
+        echo "To remove captured images manually:"
+        echo "  sudo rm -rf /mnt/astro_camera_storage"
+        echo ""
+        ;;
+
+    remove)
+        echo "Astro Camera removed (configuration and data preserved)."
+        ;;
+
+    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+        # Do nothing for these cases
+        ;;
+
+    *)
+        echo "postrm called with unknown argument \`$1'" >&2
+        exit 1
+        ;;
+esac
+
+# Reload systemd
+systemctl daemon-reload || true
+
+exit 0

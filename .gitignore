@@ -1,1 +1,27 @@
 *.pyc
+
+# Debian package build artifacts
+*.deb
+astro-camera_*/
+*.buildinfo
+*.changes
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs
+*.log
+/var/log/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
