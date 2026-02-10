@@ -43,7 +43,7 @@ This version has been significantly refactored for **performance**, **compatibil
 - 👁️ **Live preview** with zoom and crosshair overlay
 - 🖼️ **Built-in gallery** for reviewing captured images on LCD
 - 💾 **USB mass storage mode** (Pi Zero models) for easy file transfer
-- 🌐 **Network features**: Display IP address, Samba file sharing
+- 🌐 **Network features**: Display IP address, Samba file sharing, WiFi hotspot with mobile web interface
 - 🔘 **Physical button interface** - 8 buttons for complete headless operation
 - 📟 **128×128 LCD display** - Waveshare 1.44" color screen
 - 🔋 **Efficient operation** - Minimal CPU usage, suitable for battery power
@@ -121,6 +121,9 @@ The installer automatically handles these:
 - `numpy` - Numerical operations
 - `opencv-python` - Computer vision utilities
 - `samba` - Network file sharing
+- `flask` - Web interface framework
+- `hostapd` - WiFi access point daemon
+- `dnsmasq` - DHCP and DNS server
 
 ---
 
@@ -360,6 +363,21 @@ The Astro Camera uses 8 physical buttons for all operations:
 - **Controls**:
   - **←/→**: Previous/Next image
   - **Center**: Exit gallery
+
+#### 17. WiFi AP (Access Point)
+- **Action**: Enable/Disable WiFi hotspot for mobile control
+- **Function**: Creates a WiFi access point that mobile devices can connect to
+- **SSID**: `AstroCamera`
+- **Password**: `astro1234`
+- **IP Address**: `192.168.50.1`
+- **Web Interface**: Access at `http://192.168.50.1:5000` in your mobile browser
+- **Features**:
+  - Live camera preview on mobile screen
+  - Adjust camera settings remotely (ISO, shutter speed, image count)
+  - Trigger captures without touching the camera
+  - Real-time status updates
+- **Note**: WiFi AP mode disables internet access on the Raspberry Pi. Use for field operation when internet is not needed.
+- **Security**: Change the default password by editing `/etc/hostapd/hostapd_astro.conf` and updating the `wpa_passphrase` value.
 
 ---
 

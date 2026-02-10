@@ -119,6 +119,71 @@ class Camera:
             self.camera.close()
             callback([func])
 
+    def start_web_preview(self, menu):
+        """
+        Start camera preview for web streaming (no LCD display)
+
+        Args:
+            menu: Menu object containing camera settings
+
+        Returns:
+            tuple: (StreamingOutput, MJPEGEncoder) for web interface use
+        """
+        output = StreamingOutput()
+        encoder = MJPEGEncoder()
+
+        # Get current image type
+        self.image_type = menu[4]["options"][menu[4]["current-option"]]
+
+        # Initialize camera
+        self.camera = Picamera2()
+        modes = self.camera.sensor_modes
+
+        # Select mode based on image type
+        if self.image_type == "RAW":
+            mode = modes[1]
+        else:
+            mode = modes[0]
+
+        # Configure camera for web streaming (640x480 for better quality on web)
+        config = self.camera.create_video_configuration(
+            main={"size": (640, 480)},
+            lores={"size": (640, 480)},
+            display="lores"
+        )
+        self.camera.configure(config)
+
+        # Apply manual settings if not Auto
+        if menu[0]["options"][menu[0]["current-option"]] not in ["Auto"]:
+            shutter_speed = int(float(menu[1]["options"][menu[1]["current-option"]]) * 1000000)
+            iso = int(menu[0]["options"][menu[0]["current-option"]])
+            self.camera.set_controls({
+                "AnalogueGain": int(iso)/100,
+                "ExposureTime": int(shutter_speed)
+            })
+
+        # Start recording to output stream
+        self.camera.start_recording(encoder, FileOutput(output))
+
+        logger.info("Web preview started")
+
+        return output, encoder
+
+    def stop_web_preview(self, encoder):
+        """
+        Stop web preview
+
+        Args:
+            encoder: MJPEGEncoder instance returned by start_web_preview
+        """
+        try:
+            if hasattr(self, 'camera') and self.camera:
+                self.camera.stop_recording()
+                self.camera.close()
+                logger.info("Web preview stopped")
+        except Exception as e:
+            logger.error(f"Error stopping web preview: {e}")
+
     def capture(self, stop_callback=None):
         """
         Capture image with interruptible wait

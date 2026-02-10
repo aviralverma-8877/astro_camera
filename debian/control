@@ -5,7 +5,7 @@ Priority: optional
 Architecture: armhf
 Maintainer: Aviral Verma <aviralverma-8877@github.com>
 Homepage: https://github.com/aviralverma-8877/astro_camera
-Depends: python3 (>= 3.7), python3-pil, python3-numpy, python3-opencv, python3-picamera2, python3-spidev
+Depends: python3 (>= 3.7), python3-pil, python3-numpy, python3-opencv, python3-picamera2, python3-spidev, python3-flask, hostapd, dnsmasq
 Recommends: python3-lgpio
 Suggests: samba
 Description: High-performance Raspberry Pi astrophotography camera system

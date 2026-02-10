@@ -1,0 +1,324 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #0a0a0a;
+    color: #e0e0e0;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #333;
+    margin-bottom: 1.5rem;
+}
+
+header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ff3333;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #33ff33;
+    box-shadow: 0 0 8px #33ff33;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.status-dot.error {
+    background-color: #ff3333;
+    box-shadow: 0 0 8px #ff3333;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+#status-text {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+/* Video Section */
+.video-section {
+    margin-bottom: 1.5rem;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/3;
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #333;
+}
+
+.video-feed {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.video-overlay.hidden {
+    display: none;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #333;
+    border-top-color: #ff3333;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Controls Section */
+.controls-section {
+    margin-bottom: 1.5rem;
+}
+
+.controls-section h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #ff3333;
+}
+
+.control-group {
+    margin-bottom: 1rem;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #aaa;
+}
+
+.control-select {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    border: 1px solid #333;
+    border-radius: 6px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2.5rem;
+    transition: all 0.2s ease;
+}
+
+.control-select:focus {
+    outline: none;
+    border-color: #ff3333;
+    box-shadow: 0 0 0 3px rgba(255, 51, 51, 0.1);
+}
+
+.control-select:active {
+    background-color: #222;
+}
+
+/* Action Section */
+.action-section {
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.btn-primary {
+    width: 100%;
+    min-height: 60px;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 51, 51, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 51, 51, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(255, 51, 51, 0.3);
+}
+
+.btn-primary:disabled {
+    background: #444;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    opacity: 0.6;
+}
+
+.btn-icon {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2;
+}
+
+.capture-status {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    text-align: center;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    display: none;
+}
+
+.capture-status.success {
+    display: block;
+    background-color: rgba(51, 255, 51, 0.1);
+    border: 1px solid #33ff33;
+    color: #33ff33;
+}
+
+.capture-status.error {
+    display: block;
+    background-color: rgba(255, 51, 51, 0.1);
+    border: 1px solid #ff3333;
+    color: #ff3333;
+}
+
+.capture-status.capturing {
+    display: block;
+    background-color: rgba(255, 153, 0, 0.1);
+    border: 1px solid #ff9900;
+    color: #ff9900;
+}
+
+/* Footer */
+footer {
+    margin-top: auto;
+    padding: 1.5rem 0;
+    border-top: 1px solid #333;
+    text-align: center;
+}
+
+.info-text {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0.25rem 0;
+}
+
+.info-text strong {
+    color: #aaa;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .container {
+        padding: 2rem;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .controls-section h2 {
+        font-size: 1.4rem;
+    }
+
+    .btn-primary {
+        min-height: 70px;
+        font-size: 1.2rem;
+    }
+
+    .video-container {
+        aspect-ratio: 16/9;
+    }
+}
+
+/* Touch-friendly enhancements */
+@media (hover: none) and (pointer: coarse) {
+    .control-select,
+    .btn-primary {
+        min-height: 48px;
+        font-size: 16px; /* Prevents iOS zoom on focus */
+    }
+
+    .control-select:focus {
+        font-size: 16px;
+    }
+}
+
+/* Dark mode optimization (preserve night vision) */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #000;
+    }
+
+    .video-container {
+        background-color: #111;
+    }
+}

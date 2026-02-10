@@ -32,6 +32,29 @@ sudo apt install python3-opencv -y
 sudo apt install -y python3-picamera2
 sudo pip install numpy --break-system-packages
 
+# Install Flask for web interface
+echo "Installing Flask..."
+sudo pip3 install flask --break-system-packages
+
+# Install network services for WiFi AP
+echo "Installing hostapd and dnsmasq..."
+sudo apt-get install -y hostapd dnsmasq
+
+# Copy WiFi AP configuration files
+echo "Setting up WiFi AP configuration..."
+sudo mkdir -p /etc/hostapd
+sudo mkdir -p /etc/dnsmasq.d
+cd ~/astro_camera
+sudo cp config/hostapd_astro.conf /etc/hostapd/
+sudo cp config/dnsmasq_astro.conf /etc/dnsmasq.d/
+
+# Disable auto-start (manual control via menu)
+echo "Configuring services..."
+sudo systemctl disable hostapd
+sudo systemctl disable dnsmasq
+sudo systemctl stop hostapd 2>/dev/null || true
+sudo systemctl stop dnsmasq 2>/dev/null || true
+
 sudo echo "dtoverlay=dwc2" >> /boot/config.txt
 sudo echo "dwc2" >> /etc/modules
 
