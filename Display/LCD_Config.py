@@ -52,8 +52,11 @@ def GPIO_Init():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     GPIO.setup(LCD_RST_PIN, GPIO.OUT)
+    time.sleep(1)
     GPIO.setup(LCD_DC_PIN, GPIO.OUT)
+    time.sleep(1)
     GPIO.setup(LCD_BL_PIN, GPIO.OUT)
+    time.sleep(1)
     SPI.max_speed_hz = 9000000
     SPI.mode = 0b00
     return 0
