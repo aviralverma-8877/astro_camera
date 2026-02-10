@@ -335,5 +335,5 @@ class LCD:
 		GPIO.output(LCD_Config.LCD_DC_PIN, GPIO.HIGH)
 
 		# Write in larger 8KB chunks (fewer SPI calls, better performance)
-		for i in range(0, len(pix_bytes), 8192):
-			LCD_Config.SPI_Write_Byte(pix_bytes[i:i+8192])
+		for i in range(0, len(pix_bytes), 4096):
+			LCD_Config.SPI_Write_Byte(pix_bytes[i:i+4096])
