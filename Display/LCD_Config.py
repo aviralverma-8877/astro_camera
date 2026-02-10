@@ -34,7 +34,6 @@ GPIO = GPIOInterface()
 # Pin definition
 LCD_RST_PIN         = 27
 LCD_DC_PIN          = 25
-LCD_CS_PIN          = 8
 LCD_BL_PIN          = 24
 
 # SPI device, bus = 0, device = 0
@@ -54,7 +53,6 @@ def GPIO_Init():
     GPIO.setwarnings(False)
     GPIO.setup(LCD_RST_PIN, GPIO.OUT)
     GPIO.setup(LCD_DC_PIN, GPIO.OUT)
-    GPIO.setup(LCD_CS_PIN, GPIO.OUT)
     GPIO.setup(LCD_BL_PIN, GPIO.OUT)
     SPI.max_speed_hz = 9000000
     SPI.mode = 0b00
