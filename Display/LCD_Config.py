@@ -30,8 +30,6 @@ import time
 
 # Initialize GPIO interface (compatible with Pi 5 and older models)
 GPIO = GPIOInterface()
-GPIO.cleanup()
-GPIO = GPIOInterface()
 
 # Pin definition
 LCD_RST_PIN         = 27
