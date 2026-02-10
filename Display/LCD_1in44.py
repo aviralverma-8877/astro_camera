@@ -26,9 +26,12 @@
  #
 
 from . import LCD_Config
-import RPi.GPIO as GPIO
+from GPIO_Compat import GPIOInterface
 import time
 import numpy as np
+
+# Initialize GPIO interface (compatible with Pi 5 and older models)
+GPIO = GPIOInterface()
 
 LCD_1IN44 = 1
 LCD_1IN8 = 0
@@ -304,12 +307,33 @@ class LCD:
 		if imwidth != self.width or imheight != self.height:
 			raise ValueError('Image must be same dimensions as display \
 				({0}x{1}).' .format(self.width, self.height))
-		img = np.asarray(Image)
-		pix = np.zeros((self.width,self.height,2), dtype = np.uint8)
-		pix[...,[0]] = np.add(np.bitwise_and(img[...,[0]],0xF8),np.right_shift(img[...,[1]],5))
-		pix[...,[1]] = np.add(np.bitwise_and(np.left_shift(img[...,[1]],3),0xE0),np.right_shift(img[...,[2]],3))
-		pix = pix.flatten().tolist()
+
+		# Convert to numpy once (ensure uint8)
+		img = np.asarray(Image, dtype=np.uint8)
+
+		# Optimized RGB565 conversion using numpy broadcasting
+		# RGB888 to RGB565: RRRRR GGGGGG BBBBB
+		# Extract color components and shift
+		r5 = (img[:, :, 0] & 0xF8)          # Red: top 5 bits
+		g6_high = (img[:, :, 1] & 0xE0) >> 5  # Green: top 3 bits
+		g6_low = (img[:, :, 1] & 0x1C) << 3   # Green: next 3 bits
+		b5 = (img[:, :, 2] & 0xF8) >> 3      # Blue: top 5 bits
+
+		# Pack into 2 bytes per pixel (big-endian RGB565)
+		byte0 = r5 | g6_high
+		byte1 = g6_low | b5
+
+		# Allocate output array and fill
+		pix = np.empty((self.height, self.width, 2), dtype=np.uint8)
+		pix[:, :, 0] = byte0
+		pix[:, :, 1] = byte1
+
+		# Convert to bytes directly (much faster than flatten().tolist())
+		pix_bytes = pix.tobytes()
+
 		self.LCD_SetWindows(Xstart, Ystart, self.width , self.height)
 		GPIO.output(LCD_Config.LCD_DC_PIN, GPIO.HIGH)
-		for i in range(0,len(pix),4096):
-			LCD_Config.SPI_Write_Byte(pix[i:i+4096])
+
+		# Write in larger 8KB chunks (fewer SPI calls, better performance)
+		for i in range(0, len(pix_bytes), 8192):
+			LCD_Config.SPI_Write_Byte(pix_bytes[i:i+8192])

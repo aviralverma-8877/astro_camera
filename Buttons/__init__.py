@@ -1,5 +1,8 @@
-import RPi.GPIO as GPIO
+from GPIO_Compat import GPIOInterface
 import time
+
+# Initialize GPIO interface (compatible with Pi 5 and older models)
+GPIO = GPIOInterface()
 KEY_UP_PIN     = 6 
 KEY_DOWN_PIN   = 19
 KEY_LEFT_PIN   = 5

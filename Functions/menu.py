@@ -163,7 +163,7 @@ class Menu:
         try:
             while(True):
                 if stop():
-                    exit(0)
+                    return  # Exit thread gracefully, not exit(0)
                 if next():
                     index += 1
                     if index >= total_images:
@@ -174,11 +174,15 @@ class Menu:
                         index = total_images-1
                 if p_index != index:
                     if dir_list[index].lower().endswith(('.png', '.jpg', '.jpeg')):
-                        img = Image.open(f"/mnt/usb_share/{dir_list[index]}")
-                        new_img = img.resize((128,128))
-                        img.close()
-                        func.display.disp.LCD_ShowImage(new_img,0,0)
+                        # Use context manager for proper resource cleanup
+                        with Image.open(f"/mnt/usb_share/{dir_list[index]}") as img:
+                            new_img = img.resize((128,128))
+                            func.display.disp.LCD_ShowImage(new_img,0,0)
+                            new_img.close()  # Close resized image
                     p_index = index
+
+                # Prevent CPU burn (20fps is sufficient for gallery navigation)
+                time.sleep(0.05)
         finally:
             callback([func])
 

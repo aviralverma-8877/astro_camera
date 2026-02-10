@@ -2,6 +2,7 @@ import time
 import io
 import cv2
 import numpy as np
+import logging
 from picamera2.encoders import JpegEncoder, MJPEGEncoder
 from picamera2 import Picamera2, Preview
 from picamera2.outputs import FileOutput
@@ -9,6 +10,8 @@ from datetime import datetime
 from fractions import Fraction
 from threading import Condition
 from PIL import Image, ImageDraw
+
+logger = logging.getLogger(__name__)
 
 
 class StreamingOutput(io.BufferedIOBase):
@@ -31,10 +34,12 @@ class StreamingOutput(io.BufferedIOBase):
 class Camera:
     def __init__(self, main_dir) -> None:
         self.main_dir = main_dir
-        
+        self.wait_time = 0.5  # Default wait time
+        self.storage_path = "/mnt/usb_share"  # Default storage path
+
 
     def configure(self, menu):
-        wait_time = float(menu[3]["options"][menu[3]["current-option"]])
+        self.wait_time = float(menu[3]["options"][menu[3]["current-option"]])
         self.image_type = menu[4]["options"][menu[4]["current-option"]]
         self.camera = Picamera2()
         modes = self.camera.sensor_modes
@@ -100,7 +105,7 @@ class Camera:
                     crossed = True
                 disp.LCD_ShowImage(image,0,0)
                 if stop():
-                    exit(0)
+                    return  # Exit thread gracefully, not exit(0)
                 if zoom():
                     if not zoomed:
                         self.camera.set_controls({"ScalerCrop": (x, y, 1024, 1024)})
@@ -108,16 +113,43 @@ class Camera:
                     else:
                         self.camera.set_controls({"ScalerCrop": (0, 0, w, h)})
                         zoomed = False
-                time.sleep(0.01)
+                # Removed time.sleep(0.01) - unnecessary delay, camera waits for frames with condition.wait()
         finally:
             self.camera.stop_recording()
             self.camera.close()
             callback([func])
 
-    def capture(self):
-        time.sleep(self.wait_time)
+    def capture(self, stop_callback=None):
+        """
+        Capture image with interruptible wait
+
+        Args:
+            stop_callback: Optional callback function that returns True to cancel capture
+
+        Returns:
+            True if capture succeeded, False if cancelled
+        """
+        # Interruptible wait in small chunks to remain responsive
+        elapsed = 0
+        while elapsed < self.wait_time:
+            if stop_callback and stop_callback():
+                logger.info("Capture cancelled by user")
+                return False
+
+            # Sleep in 0.5s chunks to check for cancellation
+            sleep_chunk = min(0.5, self.wait_time - elapsed)
+            time.sleep(sleep_chunk)
+            elapsed += sleep_chunk
+
+        # Proceed with capture
         now = datetime.now()
-        filename = now.strftime("/mnt/usb_share/%d_%m_%Y_%H_%M_%S.jpg")
-        self.camera.capture_file(filename)
+        filename = now.strftime(f"{self.storage_path}/%d_%m_%Y_%H_%M_%S.jpg")
+        try:
+            self.camera.capture_file(filename)
+            logger.info(f"Captured image: {filename}")
+            return True
+        except Exception as e:
+            logger.error(f"Capture failed: {e}")
+            return False
     def blank_method(self, param=[]):
         pass

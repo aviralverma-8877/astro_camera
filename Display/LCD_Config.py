@@ -25,8 +25,11 @@
  #
  
 import spidev
-import RPi.GPIO as GPIO
+from GPIO_Compat import GPIOInterface
 import time
+
+# Initialize GPIO interface (compatible with Pi 5 and older models)
+GPIO = GPIOInterface()
 
 # Pin definition
 LCD_RST_PIN         = 27
